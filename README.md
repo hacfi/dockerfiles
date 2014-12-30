@@ -2,4 +2,5 @@
 
 ## Images
 
+- [elasticsearch](elasticsearch)
 - [percona](percona)
