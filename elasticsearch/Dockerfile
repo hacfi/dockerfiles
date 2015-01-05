@@ -13,9 +13,9 @@ RUN apt-get update && \
 
 CMD ["/usr/share/elasticsearch/bin/elasticsearch"]
 
-EXPOSE 9200 9300
-
 ADD config/elasticsearch.yml /usr/share/elasticsearch/elasticsearch.yml
+
+EXPOSE 9200 9300
 
 VOLUME ["/data"]
 
