@@ -19,10 +19,6 @@ if [ ! -d "$DATADIR/mysql" -a "${1%_safe}" = 'mysqld' ]; then
   mysql_install_db
   echo 'Finished mysql_install_db'
 
-  # These statements _must_ be on individual lines, and _must_ end with
-  # semicolons (no line breaks or comments are permitted).
-  # TODO proper SQL escaping on ALL the things D:
-
   tempSqlFile='/tmp/mysql-first-time.sql'
   cat > "$tempSqlFile" <<-SQL
     DELETE FROM mysql.user ;
