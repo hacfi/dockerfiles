@@ -1,30 +1,28 @@
 FROM debian:wheezy
 
-# persistent / runtime deps
+MAINTAINER Philipp Wahala <philipp.wahala@gmail.com>
+
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates curl libxml2 --no-install-recommends && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates curl libicu-dev libmcrypt4 libxml2 --no-install-recommends && \
     rm -r /var/lib/apt/lists/*
 
-# phpize deps
 RUN apt-get update && \
-    apt-get install -y autoconf gcc make pkg-config --no-install-recommends && \
+    apt-get install -y autoconf gcc g++ make pkg-config --no-install-recommends && \
     rm -r /var/lib/apt/lists/*
 
 ENV PHP_INI_DIR /usr/local/etc/php
 RUN mkdir -p $PHP_INI_DIR/conf.d
 
-ENV PHP_EXTRA_CONFIGURE_ARGS --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data
-
 RUN gpg --keyserver pgp.mit.edu --recv-keys 0BD78B5F97500D450838F95DFE857D9A90D90EC1 0B96609E270F565C13292B24C13C70B87267B52D
 
 ENV PHP_VERSION 5.5.20
 
-# --enable-mysqlnd is included below because it's harder to compile after the fact the extensions are (since it's a plugin for several extensions, not an extension in itself)
 RUN buildDeps=" \
     $PHP_EXTRA_BUILD_DEPS \
     bzip2 \
     file \
     libcurl4-openssl-dev \
+    libmcrypt-dev \
     libreadline6-dev \
     libssl-dev \
     libxml2-dev \
@@ -43,9 +41,22 @@ RUN buildDeps=" \
   ./configure \
     --with-config-file-path="$PHP_INI_DIR" \
     --with-config-file-scan-dir="$PHP_INI_DIR/conf.d" \
-    $PHP_EXTRA_CONFIGURE_ARGS \
+    --enable-bcmath \
+    --enable-intl \
+    --enable-mbstring \
+    --enable-opcache \
+    --enable-pcntl \
+    --enable-sockets \
+    --enable-shmop \
+    --enable-fpm \
+    --with-fpm-user=www-data \
+    --with-fpm-group=www-data \
     --disable-cgi \
     --enable-mysqlnd \
+    --with-mysql=mysqlnd \
+    --with-pdo-mysql=mysqlnd \
+    --with-mcrypt \
+    --with-mhash \
     --with-curl \
     --with-openssl \
     --with-readline \
