@@ -1,0 +1,50 @@
+FROM debian:jessie
+
+ENV DEBIAN_FRONTEND noninteractive
+
+# Debug info - can be removed
+RUN du -s --exclude=proc /
+
+RUN echo "Yes, do as I say!" | apt-get purge \
+      debconf-i18n \
+      iproute2 \
+      ncurses-base \
+      ncurses-bin \
+      e2fslibs \
+      libcomerr2 && \
+    echo "Yes, do as I say!" | apt-get purge \
+      acl \
+      inetutils-ping \
+      insserv \
+      libcap2-bin \
+      libgpg-error0 \
+      libkmod2 \
+      libncursesw5 \
+      libprocps3 \
+      libsemanage-common \
+      libsepol1 \
+      libsmartcols1 \
+      libudev1 \
+      libustr-1.0-1 \
+      startpar \
+      tzdata
+
+RUN cd /usr/share && \
+    tar -czf copyrights.tar.gz common-licenses doc/*/copyright && \
+    sed 's|doc/\*/copyright|copyrights.tar.gz|' /etc/motd && \
+    rm -rf \
+      /usr/share/doc/*/copyright \
+      /usr/share/common-licenses
+
+RUN rm -r \
+      /usr/share/doc \
+      /usr/share/info \
+      /usr/share/locale \
+      /usr/share/man \
+      /var/cache/debconf/* \
+      /var/lib/apt/lists/* \
+      /usr/lib/locale/C.UTF-8 \
+      /var/log/*
+
+# Debug info - can be removed
+RUN du -s --exclude=proc /
