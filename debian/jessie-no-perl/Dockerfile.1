@@ -29,6 +29,27 @@ RUN echo "Yes, do as I say!" | apt-get purge \
       startpar \
       tzdata
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends cdebconf
+
+ENV DEBCONF_USE_CDEBCONF yes
+
+COPY debconf_2_all.deb /
+
+RUN cp /usr/share/debconf/confmodule /tmp
+
+RUN dpkg -i /debconf_2_all.deb
+
+RUN echo "exec /usr/lib/cdebconf/dpkg-preconfigure $0 \"$@"\" >/usr/sbin/dpkg-preconfigure && \
+    chmod a+x /usr/sbin/dpkg-preconfigure
+
+RUN mkdir /usr/share/debconf && \
+    mv /tmp/confmodule /usr/share/debconf
+
+RUN echo "Yes, do as I say!" | apt-get purge perl-base
+
+COPY perl /usr/bin/
+
 RUN cd /usr/share && \
     tar -czf copyrights.tar.gz common-licenses doc/*/copyright && \
     sed 's|doc/\*/copyright|copyrights.tar.gz|' /etc/motd && \
@@ -36,7 +57,9 @@ RUN cd /usr/share && \
       /usr/share/doc/*/copyright \
       /usr/share/common-licenses
 
-RUN rm -r \
+RUN apt-get clean && \
+    rm -r \
+      /debconf_2_all.deb \
       /etc/systemd \
       /usr/lib/locale/C.UTF-8 \
       /usr/share/doc \
@@ -46,6 +69,3 @@ RUN rm -r \
       /var/cache/debconf/* \
       /var/lib/apt/lists/* \
       /var/log/*
-
-# Debug info - can be removed
-RUN du -s --exclude=proc /

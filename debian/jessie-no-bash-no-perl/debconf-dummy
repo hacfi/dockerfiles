@@ -1,0 +1,8 @@
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+
+Package: debconf
+Version: 2
+Maintainer: Philipp Wahala <philipp.wahala@gmail.com>
+Provides: debconf-2.0

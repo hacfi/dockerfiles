@@ -1,5 +1,7 @@
 FROM scratch
 
+ENV DEBCONF_USE_CDEBCONF yes
+
 ADD build.tar /
 
 CMD /bin/bash
