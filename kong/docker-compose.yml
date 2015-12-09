@@ -1,0 +1,14 @@
+cassandra:
+  image: cassandra:2.1
+  container_name: cassandra-test
+  ports:
+    - 9042
+
+kong:
+  build: .
+  container_name: kong-test
+  ports:
+    - 8000:8000
+    - 8001:8001
+  links:
+    - cassandra:cassandra
