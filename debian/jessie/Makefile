@@ -1,6 +1,6 @@
 PREFIX = hacfi/
 NAME = debian
-VERSION = jessie-slim
+VERSION = jessie
 
 .PHONY: all run build release check test
 
@@ -10,18 +10,8 @@ run: check
 	docker run -t -i --rm $(PREFIX)$(NAME):$(VERSION) bash
 
 build:
-	docker build -f "Dockerfile.1" -t $(PREFIX)$(NAME):$(VERSION)-build .
-
-	docker create --name $(NAME)-$(VERSION)-build $(PREFIX)$(NAME):$(VERSION)-build
-	docker export $(NAME)-$(VERSION)-build > build.tar
-
-	docker rm -v $(NAME)-$(VERSION)-build
-	docker rmi $(PREFIX)$(NAME):$(VERSION)-build
-
-	docker build -f "Dockerfile.2" -t $(PREFIX)$(NAME):$(VERSION) .
-	@rm build.tar
-
-	@echo "\n$(PREFIX)$(NAME):$(VERSION) built successfully!"
+	docker pull debian:jessie
+	docker tag debian:jessie $(PREFIX)$(NAME):$(VERSION)
 
 release: check
 	docker push $(PREFIX)$(NAME):$(VERSION)
