@@ -7,7 +7,7 @@ VERSION = jessie-slim
 all: run
 
 run: check
-	docker run -t -i --rm $(PREFIX)$(NAME):$(VERSION) bash
+	docker run -it --rm $(PREFIX)$(NAME):$(VERSION) bash
 
 build:
 	docker build -f "Dockerfile.1" -t $(PREFIX)$(NAME):$(VERSION)-build .
@@ -26,8 +26,11 @@ build:
 release: check
 	docker push $(PREFIX)$(NAME):$(VERSION)
 
+remove: check
+	docker rmi $(PREFIX)$(NAME):$(VERSION)
+
 check:
-	@if ! docker images $(PREFIX)$(NAME) | awk '{ print $$2 }' | grep -q -F $(VERSION); then echo "$(NAME) version $(VERSION) is not yet built. Please run 'make build'"; false; fi
+	@if ! docker images $(PREFIX)$(NAME) | awk '{ print $$2 }' | grep -q -F $(VERSION); then echo "Image '$(PREFIX)$(NAME):$(VERSION)' is not yet built. Please run 'make build'."; false; fi
 
 test: check
 	docker run --rm $(PREFIX)$(NAME):$(VERSION) bash -c "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y curl && curl https://google.com"

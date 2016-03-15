@@ -1,6 +1,6 @@
 PREFIX = hacfi/
-NAME = debian
-VERSION = jessie
+NAME = java
+VERSION = 8-jdk
 
 .PHONY: all run build release check test
 
@@ -10,8 +10,7 @@ run: check
 	docker run -it --rm $(PREFIX)$(NAME):$(VERSION) bash
 
 build:
-	docker pull debian:jessie
-	docker tag debian:jessie $(PREFIX)$(NAME):$(VERSION)
+	docker build -t $(PREFIX)$(NAME):$(VERSION) .
 
 release: check
 	docker push $(PREFIX)$(NAME):$(VERSION)
@@ -23,4 +22,4 @@ check:
 	@if ! docker images $(PREFIX)$(NAME) | awk '{ print $$2 }' | grep -q -F $(VERSION); then echo "Image '$(PREFIX)$(NAME):$(VERSION)' is not yet built. Please run 'make build'."; false; fi
 
 test: check
-	docker run --rm $(PREFIX)$(NAME):$(VERSION) bash -c "apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y curl && curl https://google.com"
+	docker run --rm $(PREFIX)$(NAME):$(VERSION) bash -c "java -version 2>&1 | grep 1.8.0_"
