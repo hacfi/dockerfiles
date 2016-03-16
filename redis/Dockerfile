@@ -2,7 +2,7 @@ FROM hacfi/debian:jessie
 
 COPY docker-entrypoint.sh /
 
-RUN apt-get update -qq -y && \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
       adduser \
       curl && \

@@ -1,8 +1,8 @@
-FROM debian:jessie
+FROM hacfi/debian:jessie
 
-ENV KONG_VERSION 0.5.4
+ENV KONG_VERSION 0.7.0
 
-RUN apt-get update && \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
       curl \
       dnsmasq \
@@ -11,11 +11,12 @@ RUN apt-get update && \
       openssl \
       sudo && \
     curl -L https://github.com/Mashape/kong/releases/download/${KONG_VERSION}/kong-${KONG_VERSION}.jessie_all.deb -o /tmp/kong.deb && \
-    dpkg -i /tmp/kong.deb
+    dpkg -i /tmp/kong.deb && \
+    rm /tmp/kong.deb
 
 COPY run.sh /run.sh
 COPY kong.yml /etc/kong/kong.yml.template
 
 CMD ["/run.sh"]
 VOLUME ["/etc/kong/"]
-EXPOSE 8000 8001
+EXPOSE 7946 8000 8001 8443
