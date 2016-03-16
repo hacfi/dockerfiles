@@ -9,4 +9,5 @@ All images use [debian:jessie](https://registry.hub.docker.com/_/debian/) becaus
 - [java](java)
 - [jenkins](jenkins)
 - [kong](kong)
+- [postgres](postgres)
 - [redis](redis)
